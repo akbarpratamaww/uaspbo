@@ -10,8 +10,12 @@ public class KikoopiApp {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        System.out.println("Selamat datang di Kikoopi Coffee Shop!");
+        System.out.println("Kontak: Gedung Graha Ganesha, Jl. Hayam Wuruk No.28, Denpasar, Bali");
+        System.out.println("Telepon: 0896-0211-3245 | Email: info@kikoopi.com");
+
         while (true) {
-            System.out.println("\n=== Kikoopi Coffee Shop ===");
+            System.out.println("\n=== Menu Utama ===");
             System.out.println("1. Login");
             System.out.println("2. Registrasi");
             System.out.println("3. Keluar");
@@ -30,7 +34,7 @@ public class KikoopiApp {
                         System.out.println("Terima kasih telah mengunjungi Kikoopi!");
                         return;
                     default:
-                        System.out.println("Pilihan tidak valid!");
+                        System.out.println("Pilihan tidak valid! Silakan pilih 1, 2, atau 3.");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Masukkan harus berupa angka!");
@@ -47,6 +51,7 @@ public class KikoopiApp {
 
         Pengguna pengguna = pengelolaPengguna.autentikasi(email, kataSandi);
         if (pengguna != null) {
+            System.out.println("Login berhasil! Selamat datang, " + pengguna.getProfil().get("nama"));
             if (pengguna instanceof Pelanggan) {
                 menuPelanggan((Pelanggan) pengguna);
             } else if (pengguna instanceof Admin) {
@@ -61,6 +66,9 @@ public class KikoopiApp {
         try {
             System.out.print("Nama: ");
             String nama = scanner.nextLine();
+            if (nama.trim().isEmpty()) {
+                throw new KikoopiException("Nama tidak boleh kosong!");
+            }
             System.out.print("Email: ");
             String email = scanner.nextLine();
             System.out.print("Kata Sandi (min 6 karakter): ");
@@ -73,7 +81,7 @@ public class KikoopiApp {
             Pelanggan pelanggan = new Pelanggan(
                     UUID.randomUUID().toString(), email, kataSandi, nama, telepon, alamat);
             pengelolaPengguna.tambahPengguna(pelanggan);
-            System.out.println("Registrasi berhasil! Silakan login.");
+            System.out.println("Registrasi berhasil! Silakan login dengan email: " + email);
         } catch (KikoopiException e) {
             System.out.println("Gagal registrasi: " + e.getMessage());
         }
@@ -113,9 +121,10 @@ public class KikoopiApp {
                         updateProfil(pelanggan);
                         break;
                     case 7:
+                        System.out.println("Logout berhasil!");
                         return;
                     default:
-                        System.out.println("Pilihan tidak valid!");
+                        System.out.println("Pilihan tidak valid! Silakan pilih 1-7.");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Masukkan harus berupa angka!");
@@ -131,19 +140,27 @@ public class KikoopiApp {
         if (hasil.isEmpty()) {
             System.out.println("Tidak ada produk ditemukan!");
         } else {
-            hasil.forEach(p -> System.out.println("Nama: " + p.getDetail().get("nama") + ", Harga: Rp" + p.getDetail().get("harga") + ", Deskripsi: " + p.getDetail().get("deskripsi")));
+            System.out.println("\nDaftar Produk:");
+            hasil.forEach(p -> System.out.println(
+                    "Nama: " + p.getDetail().get("nama") +
+                    ", Harga: Rp" + p.getDetail().get("harga") +
+                    ", Deskripsi: " + p.getDetail().get("deskripsi") +
+                    ", Kategori: " + p.getDetail().get("kategori")));
         }
     }
 
     private static void buatPesanan(Pelanggan pelanggan) {
         try {
             List<ItemPesanan> items = new ArrayList<>();
-            System.out.println("Daftar produk tersedia:");
-            pengelolaProduk.cariProduk("").forEach(p -> System.out.println(p.getDetail().get("nama")));
+            System.out.println("\nDaftar produk tersedia:");
+            pengelolaProduk.cariProduk("").forEach(p -> System.out.println(
+                    p.getDetail().get("nama") + " (Rp" + p.getDetail().get("harga") + ")"));
             while (true) {
                 System.out.print("Masukkan nama produk (atau 'selesai' untuk mengakhiri): ");
                 String namaProduk = scanner.nextLine();
-                if (namaProduk.equalsIgnoreCase("selesai")) break;
+                if (namaProduk.equalsIgnoreCase("selesai")) {
+                    break;
+                }
                 System.out.print("Kuantitas: ");
                 try {
                     int kuantitas = scanner.nextInt();
@@ -152,7 +169,7 @@ public class KikoopiApp {
                     if (!hasil.isEmpty()) {
                         items.add(new ItemPesanan(hasil.get(0), kuantitas));
                     } else {
-                        System.out.println("Produk tidak ditemukan!");
+                        System.out.println("Produk '" + namaProduk + "' tidak ditemukan!");
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Kuantitas harus berupa angka!");
@@ -179,7 +196,11 @@ public class KikoopiApp {
         if (pesanan.isEmpty()) {
             System.out.println("Belum ada pesanan!");
         } else {
-            pesanan.forEach(p -> System.out.println("Pesanan ID: " + p.getId() + ", Total: Rp" + p.hitungTotal() + ", Status: " + p.getStatus()));
+            System.out.println("\nRiwayat Pesanan:");
+            pesanan.forEach(p -> System.out.println(
+                    "Pesanan ID: " + p.getId() +
+                    ", Total: Rp" + p.hitungTotal() +
+                    ", Status: " + p.getStatus()));
         }
     }
 
@@ -193,7 +214,7 @@ public class KikoopiApp {
             Ulasan ulasan = new Ulasan(UUID.randomUUID().toString(), pelanggan.getProfil().get("id"), rating, komentar, new Date());
             pengelolaUlasan.tambahUlasan(ulasan);
             pelanggan.tambahUlasan(ulasan);
-            System.out.println("Ulasan ditambahkan!");
+            System.out.println("Ulasan berhasil ditambahkan!");
         } catch (InputMismatchException e) {
             System.out.println("Rating harus berupa angka!");
             scanner.nextLine();
@@ -205,13 +226,13 @@ public class KikoopiApp {
     private static void daftarKeanggotaan(Pelanggan pelanggan) {
         try {
             if (pelanggan.getKeanggotaan() != null) {
-                System.out.println("Anda sudah terdaftar sebagai anggota!");
+                System.out.println("Anda sudah terdaftar sebagai anggota dengan status: " + pelanggan.getKeanggotaan().getStatus());
                 return;
             }
             Keanggotaan keanggotaan = new Keanggotaan(UUID.randomUUID().toString(), pelanggan.getProfil().get("id"), new Date(), "Active");
             pengelolaKeanggotaan.tambahKeanggotaan(keanggotaan);
             pelanggan.setKeanggotaan(keanggotaan);
-            System.out.println("Keanggotaan berhasil didaftarkan!");
+            System.out.println("Keanggotaan berhasil didaftarkan! ID: " + keanggotaan.getIdPelanggan());
         } catch (KikoopiException e) {
             System.out.println("Gagal mendaftar keanggotaan: " + e.getMessage());
         }
@@ -238,6 +259,15 @@ public class KikoopiApp {
             System.out.print("Kata sandi baru (kosongkan jika tidak diubah): ");
             String kataSandi = scanner.nextLine();
             if (!kataSandi.isEmpty()) profilBaru.put("kataSandi", kataSandi);
+            System.out.print("Alamat baru (kosongkan jika tidak diubah): ");
+            String alamat = scanner.nextLine();
+            if (!alamat.isEmpty()) {
+                if (alamat.trim().isEmpty()) {
+                    throw new KikoopiException("Alamat tidak boleh kosong!");
+                }
+                ((Pelanggan) pelanggan).getAlamat(); // Update alamat
+                profilBaru.put("alamat", alamat);
+            }
             pelanggan.updateProfil(profilBaru);
             pengelolaPengguna.perbaruiPengguna(pelanggan);
             System.out.println("Profil berhasil diperbarui!");
@@ -253,8 +283,9 @@ public class KikoopiApp {
             System.out.println("2. Update Produk");
             System.out.println("3. Hapus Produk");
             System.out.println("4. Kelola Keanggotaan");
-            System.out.println("5. Buat Laporan");
-            System.out.println("6. Logout");
+            System.out.println("5. Lihat Ulasan");
+            System.out.println("6. Buat Laporan");
+            System.out.println("7. Logout");
             System.out.print("Pilih opsi: ");
             try {
                 int pilihan = scanner.nextInt();
@@ -273,12 +304,16 @@ public class KikoopiApp {
                         kelolaKeanggotaan(admin);
                         break;
                     case 5:
-                        System.out.println(admin.buatLaporan());
+                        lihatUlasan();
                         break;
                     case 6:
+                        System.out.println(admin.buatLaporan());
+                        break;
+                    case 7:
+                        System.out.println("Logout berhasil!");
                         return;
                     default:
-                        System.out.println("Pilihan tidak valid!");
+                        System.out.println("Pilihan tidak valid! Silakan pilih 1-7.");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Masukkan harus berupa angka!");
@@ -337,7 +372,7 @@ public class KikoopiApp {
                 admin.kelolaInventaris(produkBaru);
                 System.out.println("Produk berhasil diperbarui!");
             } else {
-                System.out.println("Produk tidak ditemukan!");
+                System.out.println("Produk '" + namaProduk + "' tidak ditemukan!");
             }
         } catch (InputMismatchException e) {
             System.out.println("Harga harus berupa angka!");
@@ -355,7 +390,7 @@ public class KikoopiApp {
             pengelolaProduk.hapusProduk(hasil.get(0).getDetail().get("id"));
             System.out.println("Produk berhasil dihapus!");
         } else {
-            System.out.println("Produk tidak ditemukan!");
+            System.out.println("Produk '" + namaHapus + "' tidak ditemukan!");
         }
     }
 
@@ -371,10 +406,26 @@ public class KikoopiApp {
                 admin.kelolaKeanggotaan(keanggotaan);
                 System.out.println("Status keanggotaan berhasil diperbarui!");
             } else {
-                System.out.println("Keanggotaan tidak ditemukan!");
+                System.out.println("Keanggotaan untuk ID '" + idPelanggan + "' tidak ditemukan!");
             }
         } catch (KikoopiException e) {
             System.out.println("Gagal mengelola keanggotaan: " + e.getMessage());
+        }
+    }
+
+    private static void lihatUlasan() {
+        System.out.print("Masukkan kata kunci untuk ulasan (kosongkan untuk melihat semua): ");
+        String kataKunci = scanner.nextLine();
+        List<Ulasan> ulasan = pengelolaUlasan.cariUlasanByKomentar(kataKunci);
+        if (ulasan.isEmpty()) {
+            System.out.println("Tidak ada ulasan ditemukan!");
+        } else {
+            System.out.println("\nDaftar Ulasan:");
+            ulasan.forEach(u -> System.out.println(
+                    "Pelanggan ID: " + u.getDetail().get("idPelanggan") +
+                    ", Rating: " + u.getDetail().get("rating") +
+                    ", Komentar: " + u.getDetail().get("komentar") +
+                    ", Tanggal: " + u.getDetail().get("tanggal")));
         }
     }
 }
