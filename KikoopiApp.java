@@ -10,16 +10,26 @@ public class KikoopiApp {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println("Selamat datang di Kikoopi Coffee Shop!");
-        System.out.println("Kontak: Gedung Graha Ganesha, Jl. Hayam Wuruk No.28, Denpasar, Bali");
-        System.out.println("Telepon: 0896-0211-3245 | Email: info@kikoopi.com");
+        // Pesan selamat dalam tabel
+        System.out.println("┌───────────────────────────────────────────────────┐");
+        System.out.println("│            Kikoopi Coffee Shop                    │");
+        System.out.println("├───────────────────────────────────────────────────┤");
+        System.out.println("│ Alamat  : Gedung Graha Ganesha, Jl. Hayam Wuruk  │");
+        System.out.println("│           No.28, Denpasar, Bali                   │");
+        System.out.println("│ Telepon : 0896-0211-3245                         │");
+        System.out.println("│ Email   : info@kikoopi.com                       │");
+        System.out.println("└───────────────────────────────────────────────────┘");
 
         while (true) {
-            System.out.println("\n=== Menu Utama ===");
-            System.out.println("1. Login");
-            System.out.println("2. Registrasi");
-            System.out.println("3. Keluar");
-            System.out.print("Pilih opsi: ");
+            // Menu utama dalam tabel
+            System.out.println("\n┌────────────────── Menu Utama ───────────────────┐");
+            System.out.println("│ No │ Pilihan                                  │");
+            System.out.println("├────┬──────────────────────────────────────────┤");
+            System.out.println("│ 1  │ Login                                    │");
+            System.out.println("│ 2  │ Registrasi                               │");
+            System.out.println("│ 3  │ Keluar                                   │");
+            System.out.println("└────┴──────────────────────────────────────────┘");
+            System.out.print("Pilih opsi (1-3): ");
             try {
                 int pilihan = scanner.nextInt();
                 scanner.nextLine();
@@ -31,10 +41,13 @@ public class KikoopiApp {
                         registrasi();
                         break;
                     case 3:
-                        System.out.println("Terima kasih telah mengunjungi Kikoopi!");
+                        System.out.println("\n┌──────────────────────────────────────────────┐");
+                        System.out.println("│ Terima kasih telah mengunjungi Kikoopi!   │");
+                        System.out.println("└──────────────────────────────────────────────┘");
+                        scanner.close();
                         return;
                     default:
-                        System.out.println("Pilihan tidak valid! Silakan pilih 1, 2, atau 3.");
+                        System.out.println("Pilihan tidak valid! Silakan pilih 1-3!");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Masukkan harus berupa angka!");
@@ -44,6 +57,10 @@ public class KikoopiApp {
     }
 
     private static void login() {
+        System.out.println("\n┌───────────────── Form Login ──────────────────┐");
+        System.out.println("│ Email          :                              │");
+        System.out.println("│ Kata Sandi     :                              │");
+        System.out.println("└───────────────────────────────────────────────┘");
         System.out.print("Email: ");
         String email = scanner.nextLine();
         System.out.print("Kata Sandi: ");
@@ -51,7 +68,7 @@ public class KikoopiApp {
 
         Pengguna pengguna = pengelolaPengguna.autentikasi(email, kataSandi);
         if (pengguna != null) {
-            System.out.println("Login berhasil! Selamat datang, " + pengguna.getProfil().get("nama"));
+            System.out.println("\nLogin berhasil! Selamat datang, " + pengguna.getProfil().get("nama"));
             if (pengguna instanceof Pelanggan) {
                 menuPelanggan((Pelanggan) pengguna);
             } else if (pengguna instanceof Admin) {
@@ -64,6 +81,13 @@ public class KikoopiApp {
 
     private static void registrasi() {
         try {
+            System.out.println("\n┌────────────── Form Registrasi ──────────────┐");
+            System.out.println("│ Nama           :                           │");
+            System.out.println("│ Email          :                           │");
+            System.out.println("│ Kata Sandi     : (min 6 karakter)         │");
+            System.out.println("│ Telepon        :                           │");
+            System.out.println("│ Alamat         :                           │");
+            System.out.println("└────────────────────────────────────────────┘");
             System.out.print("Nama: ");
             String nama = scanner.nextLine();
             if (nama.trim().isEmpty()) {
@@ -71,7 +95,7 @@ public class KikoopiApp {
             }
             System.out.print("Email: ");
             String email = scanner.nextLine();
-            System.out.print("Kata Sandi (min 6 karakter): ");
+            System.out.print("Kata Sandi: ");
             String kataSandi = scanner.nextLine();
             System.out.print("Telepon: ");
             String telepon = scanner.nextLine();
@@ -81,7 +105,7 @@ public class KikoopiApp {
             Pelanggan pelanggan = new Pelanggan(
                     UUID.randomUUID().toString(), email, kataSandi, nama, telepon, alamat);
             pengelolaPengguna.tambahPengguna(pelanggan);
-            System.out.println("Registrasi berhasil! Silakan login dengan email: " + email);
+            System.out.println("\nRegistrasi berhasil! Silakan login dengan email: " + email);
         } catch (KikoopiException e) {
             System.out.println("Gagal registrasi: " + e.getMessage());
         }
@@ -89,15 +113,19 @@ public class KikoopiApp {
 
     private static void menuPelanggan(Pelanggan pelanggan) {
         while (true) {
-            System.out.println("\n=== Menu Pelanggan ===");
-            System.out.println("1. Cari Produk");
-            System.out.println("2. Buat Pesanan");
-            System.out.println("3. Lihat Riwayat Pesanan");
-            System.out.println("4. Tambah Ulasan");
-            System.out.println("5. Daftar Keanggotaan");
-            System.out.println("6. Update Profil");
-            System.out.println("7. Logout");
-            System.out.print("Pilih opsi: ");
+            // Menu pelanggan dalam tabel
+            System.out.println("\n┌────────────── Menu Pelanggan ──────────────┐");
+            System.out.println("│ No │ Pilihan                               │");
+            System.out.println("├────┬──────────────────────────────────────┘─┤");
+            System.out.println("│ 1  │ Cari Produk                            │");
+            System.out.println("│ 2  │ Buat Pesanan                            │");
+            System.out.println("│ 3  │ Lihat Riwayat Pesanan                  │");
+            System.out.println("│ 4  │ Tambah Ulasan                          │");
+            System.out.println("│ 5  │ Daftar Keanggotaan                     │");
+            System.out.println("│ 6  │ Update Profil                          │");
+            System.out.println("│ 7  │ Logout                                 │");
+            System.out.println("└────┴────────────────────────────────────────┘");
+            System.out.print("Pilih opsi (1-7): ");
             try {
                 int pilihan = scanner.nextInt();
                 scanner.nextLine();
@@ -121,7 +149,7 @@ public class KikoopiApp {
                         updateProfil(pelanggan);
                         break;
                     case 7:
-                        System.out.println("Logout berhasil!");
+                        System.out.println("\nLogout berhasil!");
                         return;
                     default:
                         System.out.println("Pilihan tidak valid! Silakan pilih 1-7.");
@@ -134,7 +162,10 @@ public class KikoopiApp {
     }
 
     private static void cariProduk() {
-        System.out.print("Masukkan kata kunci (kosongkan untuk melihat semua produk): ");
+        System.out.println("\n┌──────────── Form Cari Produk ─────────────┐┘");
+        System.out.println("│ Kata Kunci   : (kosongkan untuk semua)    │");
+        System.out.println("└────────────────────────────────────────────┘");
+        System.out.print("Masukkan kata kunci: ");
         String kataKunci = scanner.nextLine();
         List<Produk> hasil = pengelolaProduk.cariProduk(kataKunci);
         if (hasil.isEmpty()) {
@@ -153,10 +184,19 @@ public class KikoopiApp {
         try {
             List<ItemPesanan> items = new ArrayList<>();
             System.out.println("\nDaftar produk tersedia:");
-            pengelolaProduk.cariProduk("").forEach(p -> System.out.println(
+            List<Produk> semuaProduk = pengelolaProduk.cariProduk("");
+            if (semuaProduk.isEmpty()) {
+                System.out.println("Belum ada produk tersedia!");
+                return;
+            }
+            semuaProduk.forEach(p -> System.out.println(
                     p.getDetail().get("nama") + " (Rp" + p.getDetail().get("harga") + ")"));
             while (true) {
-                System.out.print("Masukkan nama produk (atau 'selesai' untuk mengakhiri): ");
+                System.out.println("\n┌────────── Form Tambah Item Pesanan ────────┐┘");
+                System.out.println("│ Nama Produk : (ketik 'selesai' untuk akhiri)   │");
+                System.out.println("│ Kuantitas   :                             │");
+                System.out.println("└────────────────────────────────────────────┘");
+                System.out.print("Masukkan nama produk: ");
                 String namaProduk = scanner.nextLine();
                 if (namaProduk.equalsIgnoreCase("selesai")) {
                     break;
@@ -168,6 +208,7 @@ public class KikoopiApp {
                     List<Produk> hasil = pengelolaProduk.cariProduk(namaProduk);
                     if (!hasil.isEmpty()) {
                         items.add(new ItemPesanan(hasil.get(0), kuantitas));
+                        System.out.println("Ditambahkan: " + namaProduk + " x" + kuantitas);
                     } else {
                         System.out.println("Produk '" + namaProduk + "' tidak ditemukan!");
                     }
@@ -182,9 +223,9 @@ public class KikoopiApp {
                 Pesanan pesanan = new Pesanan(UUID.randomUUID().toString(), pelanggan.getProfil().get("id"), items, new Date());
                 pengelolaPesanan.buatPesanan(pesanan);
                 pelanggan.buatPesanan(pesanan);
-                System.out.println("Pesanan dibuat dengan total: Rp" + pesanan.hitungTotal());
+                System.out.println("\nPesanan dibuat dengan total: Rp" + pesanan.hitungTotal());
             } else {
-                System.out.println("Tidak ada item yang ditambahkan ke pesanan!");
+                System.out.println("\nTidak ada item yang ditambahkan ke pesanan!");
             }
         } catch (KikoopiException e) {
             System.out.println("Gagal membuat pesanan: " + e.getMessage());
@@ -194,7 +235,7 @@ public class KikoopiApp {
     private static void lihatRiwayatPesanan(Pelanggan pelanggan) {
         List<Pesanan> pesanan = pelanggan.getRiwayatPesanan();
         if (pesanan.isEmpty()) {
-            System.out.println("Belum ada pesanan!");
+            System.out.println("\nBelum ada pesanan!");
         } else {
             System.out.println("\nRiwayat Pesanan:");
             pesanan.forEach(p -> System.out.println(
@@ -206,6 +247,10 @@ public class KikoopiApp {
 
     private static void tambahUlasan(Pelanggan pelanggan) {
         try {
+            System.out.println("\n┌──────────── Form Tambah Ulasan ────────────┐┘");
+            System.out.println("│ Rating       : (1-5)                      │");
+            System.out.println("│ Komentar     :                            │");
+            System.out.println("└────────────────────────────────────────────┘");
             System.out.print("Rating (1-5): ");
             int rating = scanner.nextInt();
             scanner.nextLine();
@@ -214,7 +259,7 @@ public class KikoopiApp {
             Ulasan ulasan = new Ulasan(UUID.randomUUID().toString(), pelanggan.getProfil().get("id"), rating, komentar, new Date());
             pengelolaUlasan.tambahUlasan(ulasan);
             pelanggan.tambahUlasan(ulasan);
-            System.out.println("Ulasan berhasil ditambahkan!");
+            System.out.println("\nUlasan berhasil ditambahkan!");
         } catch (InputMismatchException e) {
             System.out.println("Rating harus berupa angka!");
             scanner.nextLine();
@@ -226,13 +271,13 @@ public class KikoopiApp {
     private static void daftarKeanggotaan(Pelanggan pelanggan) {
         try {
             if (pelanggan.getKeanggotaan() != null) {
-                System.out.println("Anda sudah terdaftar sebagai anggota dengan status: " + pelanggan.getKeanggotaan().getStatus());
+                System.out.println("\nAnda sudah terdaftar sebagai anggota dengan status: " + pelanggan.getKeanggotaan().getStatus());
                 return;
             }
             Keanggotaan keanggotaan = new Keanggotaan(UUID.randomUUID().toString(), pelanggan.getProfil().get("id"), new Date(), "Active");
             pengelolaKeanggotaan.tambahKeanggotaan(keanggotaan);
             pelanggan.setKeanggotaan(keanggotaan);
-            System.out.println("Keanggotaan berhasil didaftarkan! ID: " + keanggotaan.getIdPelanggan());
+            System.out.println("\nKeanggotaan berhasil didaftarkan! ID: " + keanggotaan.getIdPelanggan());
         } catch (KikoopiException e) {
             System.out.println("Gagal mendaftar keanggotaan: " + e.getMessage());
         }
@@ -240,11 +285,18 @@ public class KikoopiApp {
 
     private static void updateProfil(Pelanggan pelanggan) {
         try {
+            System.out.println("\n┌──────────── Form Update Profil ─────────────┐");
+            System.out.println("│ Nama         : (kosongkan jika tidak diubah)  │");
+            System.out.println("│ Email        : (kosongkan jika tidak diubah)  │");
+            System.out.println("│ Telepon      : (kosongkan jika tidak diubah)  │");
+            System.out.println("│ Kata Sandi   : (kosongkan jika tidak diubah)  │");
+            System.out.println("│ Alamat       : (kosongkan jika tidak diubah)  │");
+            System.out.println("└──────────────────────────────────────────────┘");
             Map<String, String> profilBaru = new HashMap<>();
-            System.out.print("Nama baru (kosongkan jika tidak diubah): ");
+            System.out.print("Nama baru: ");
             String nama = scanner.nextLine();
             if (!nama.isEmpty()) profilBaru.put("nama", nama);
-            System.out.print("Email baru (kosongkan jika tidak diubah): ");
+            System.out.print("Email baru: ");
             String email = scanner.nextLine();
             if (!email.isEmpty()) {
                 if (pengelolaPengguna.cariPengguna(email) != null) {
@@ -253,24 +305,23 @@ public class KikoopiApp {
                 }
                 profilBaru.put("email", email);
             }
-            System.out.print("Telepon baru (kosongkan jika tidak diubah): ");
+            System.out.print("Telepon baru: ");
             String telepon = scanner.nextLine();
             if (!telepon.isEmpty()) profilBaru.put("telepon", telepon);
-            System.out.print("Kata sandi baru (kosongkan jika tidak diubah): ");
+            System.out.print("Kata sandi baru: ");
             String kataSandi = scanner.nextLine();
             if (!kataSandi.isEmpty()) profilBaru.put("kataSandi", kataSandi);
-            System.out.print("Alamat baru (kosongkan jika tidak diubah): ");
+            System.out.print("Alamat baru: ");
             String alamat = scanner.nextLine();
             if (!alamat.isEmpty()) {
                 if (alamat.trim().isEmpty()) {
                     throw new KikoopiException("Alamat tidak boleh kosong!");
                 }
-                ((Pelanggan) pelanggan).getAlamat(); // Update alamat
                 profilBaru.put("alamat", alamat);
             }
             pelanggan.updateProfil(profilBaru);
             pengelolaPengguna.perbaruiPengguna(pelanggan);
-            System.out.println("Profil berhasil diperbarui!");
+            System.out.println("\nProfil berhasil diperbarui!");
         } catch (KikoopiException e) {
             System.out.println("Gagal memperbarui profil: " + e.getMessage());
         }
@@ -278,15 +329,19 @@ public class KikoopiApp {
 
     private static void menuAdmin(Admin admin) {
         while (true) {
-            System.out.println("\n=== Menu Admin ===");
-            System.out.println("1. Tambah Produk");
-            System.out.println("2. Update Produk");
-            System.out.println("3. Hapus Produk");
-            System.out.println("4. Kelola Keanggotaan");
-            System.out.println("5. Lihat Ulasan");
-            System.out.println("6. Buat Laporan");
-            System.out.println("7. Logout");
-            System.out.print("Pilih opsi: ");
+            // Menu admin dalam tabel
+            System.out.println("\n┌─────────────── Menu Admin ────────────────┐");
+            System.out.println("│ No │ Pilihan                               │");
+            System.out.println("├────┬──────────────────────────────────────┘─┤");
+            System.out.println("│ 1  │ Tambah Produk                         │");
+            System.out.println("│ 2  │ Update Produk                         │");
+            System.out.println("│ 3  │ Hapus Produk                          │");
+            System.out.println("│ 4  │ Kelola Keanggotaan                    │");
+            System.out.println("│ 5  │ Lihat Ulasan                          │");
+            System.out.println("│ 6  │ Buat Laporan                          │");
+            System.out.println("│ 7  │ Logout                                │");
+            System.out.println("└────┴────────────────────────────────────────┘");
+            System.out.print("Pilih opsi (1-7): ");
             try {
                 int pilihan = scanner.nextInt();
                 scanner.nextLine();
@@ -307,10 +362,10 @@ public class KikoopiApp {
                         lihatUlasan();
                         break;
                     case 6:
-                        System.out.println(admin.buatLaporan());
+                        System.out.println("\n" + admin.buatLaporan());
                         break;
                     case 7:
-                        System.out.println("Logout berhasil!");
+                        System.out.println("\nLogout berhasil!");
                         return;
                     default:
                         System.out.println("Pilihan tidak valid! Silakan pilih 1-7.");
@@ -324,6 +379,12 @@ public class KikoopiApp {
 
     private static void tambahProduk(Admin admin) {
         try {
+            System.out.println("\n┌──────────── Form Tambah Produk ────────────┐┘");
+            System.out.println("│ Nama Produk  :                            │");
+            System.out.println("│ Harga        :                            │");
+            System.out.println("│ Deskripsi    :                            │");
+            System.out.println("│ Kategori     : (Makanan/Minuman)          │");
+            System.out.println("└────────────────────────────────────────────┘");
             System.out.print("Nama Produk: ");
             String nama = scanner.nextLine();
             System.out.print("Harga: ");
@@ -331,12 +392,12 @@ public class KikoopiApp {
             scanner.nextLine();
             System.out.print("Deskripsi: ");
             String deskripsi = scanner.nextLine();
-            System.out.print("Kategori (Makanan/Minuman): ");
+            System.out.print("Kategori: ");
             String kategori = scanner.nextLine();
             Produk produk = new Produk(UUID.randomUUID().toString(), nama, harga, deskripsi, kategori);
             pengelolaProduk.tambahProduk(produk);
             admin.kelolaInventaris(produk);
-            System.out.println("Produk berhasil ditambahkan!");
+            System.out.println("\nProduk berhasil ditambahkan!");
         } catch (InputMismatchException e) {
             System.out.println("Harga harus berupa angka!");
             scanner.nextLine();
@@ -347,19 +408,28 @@ public class KikoopiApp {
 
     private static void updateProduk(Admin admin) {
         try {
-            System.out.print("Nama produk yang akan diupdate: ");
+            System.out.println("\n┌──────────── Form Update Produk ────────────┐┘");
+            System.out.println("│ Nama Produk  : (produk yang akan diupdate) │");
+            System.out.println("└────────────────────────────────────────────┘");
+            System.out.print("Nama produk: ");
             String namaProduk = scanner.nextLine();
             List<Produk> hasil = pengelolaProduk.cariProduk(namaProduk);
             if (!hasil.isEmpty()) {
+                System.out.println("\n┌──────────── Form Update Produk ────────────┐┘");
+                System.out.println("│ Nama Baru    : (kosongkan jika tidak diubah)  │");
+                System.out.println("│ Harga Baru   : (0 jika tidak diubah)      │");
+                System.out.println("│ Deskripsi    : (kosongkan jika tidak diubah)  │");
+                System.out.println("│ Kategori     : (kosongkan jika tidak diubah)  │");
+                System.out.println("└────────────────────────────────────────────┘");
                 Produk produkLama = hasil.get(0);
-                System.out.print("Nama baru (kosongkan jika tidak diubah): ");
+                System.out.print("Nama baru: ");
                 String namaBaru = scanner.nextLine();
-                System.out.print("Harga baru (0 jika tidak diubah): ");
+                System.out.print("Harga baru: ");
                 double hargaBaru = scanner.nextDouble();
                 scanner.nextLine();
-                System.out.print("Deskripsi baru (kosongkan jika tidak diubah): ");
+                System.out.print("Deskripsi baru: ");
                 String deskripsiBaru = scanner.nextLine();
-                System.out.print("Kategori baru (kosongkan jika tidak diubah): ");
+                System.out.print("Kategori baru: ");
                 String kategoriBaru = scanner.nextLine();
                 Produk produkBaru = new Produk(
                         produkLama.getDetail().get("id"),
@@ -370,7 +440,7 @@ public class KikoopiApp {
                 );
                 pengelolaProduk.perbaruiProduk(produkBaru);
                 admin.kelolaInventaris(produkBaru);
-                System.out.println("Produk berhasil diperbarui!");
+                System.out.println("\nProduk berhasil diperbarui!");
             } else {
                 System.out.println("Produk '" + namaProduk + "' tidak ditemukan!");
             }
@@ -383,12 +453,15 @@ public class KikoopiApp {
     }
 
     private static void hapusProduk() {
+        System.out.println("\n┌──────────── Form Hapus Produk ─────────────┐┘");
+        System.out.println("│ Nama Produk  :                            │");
+        System.out.println("└────────────────────────────────────────────┘");
         System.out.print("Nama Produk: ");
         String namaHapus = scanner.nextLine();
         List<Produk> hasil = pengelolaProduk.cariProduk(namaHapus);
         if (!hasil.isEmpty()) {
             pengelolaProduk.hapusProduk(hasil.get(0).getDetail().get("id"));
-            System.out.println("Produk berhasil dihapus!");
+            System.out.println("\nProduk berhasil dihapus!");
         } else {
             System.out.println("Produk '" + namaHapus + "' tidak ditemukan!");
         }
@@ -396,15 +469,19 @@ public class KikoopiApp {
 
     private static void kelolaKeanggotaan(Admin admin) {
         try {
+            System.out.println("\n┌───────── Form Kelola Keanggotaan ─────────┐┘");
+            System.out.println("│ ID Pelanggan :                            │");
+            System.out.println("│ Status Baru  : (Active/Inactive)          │");
+            System.out.println("└────────────────────────────────────────────┘");
             System.out.print("ID Pelanggan: ");
             String idPelanggan = scanner.nextLine();
             Keanggotaan keanggotaan = pengelolaKeanggotaan.cariKeanggotaan(idPelanggan);
             if (keanggotaan != null) {
-                System.out.print("Status baru (Active/Inactive): ");
+                System.out.print("Status baru: ");
                 String status = scanner.nextLine();
                 pengelolaKeanggotaan.perbaruiStatusKeanggotaan(idPelanggan, status);
                 admin.kelolaKeanggotaan(keanggotaan);
-                System.out.println("Status keanggotaan berhasil diperbarui!");
+                System.out.println("\nStatus keanggotaan berhasil diperbarui!");
             } else {
                 System.out.println("Keanggotaan untuk ID '" + idPelanggan + "' tidak ditemukan!");
             }
@@ -414,7 +491,10 @@ public class KikoopiApp {
     }
 
     private static void lihatUlasan() {
-        System.out.print("Masukkan kata kunci untuk ulasan (kosongkan untuk melihat semua): ");
+        System.out.println("\n┌──────────── Form Cari Ulasan ─────────────┐┘");
+        System.out.println("│ Kata Kunci   : (kosongkan untuk semua)    │");
+        System.out.println("└────────────────────────────────────────────┘");
+        System.out.print("Masukkan kata kunci: ");
         String kataKunci = scanner.nextLine();
         List<Ulasan> ulasan = pengelolaUlasan.cariUlasanByKomentar(kataKunci);
         if (ulasan.isEmpty()) {
